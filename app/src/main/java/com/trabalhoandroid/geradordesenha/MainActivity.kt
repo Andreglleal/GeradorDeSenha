@@ -35,6 +35,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -44,6 +46,7 @@ import com.trabalhoandroid.geradordesenha.ui.theme.Blue900
 import com.trabalhoandroid.geradordesenha.ui.theme.BlueA200
 import com.trabalhoandroid.geradordesenha.ui.theme.Green900
 import com.trabalhoandroid.geradordesenha.ui.theme.RedA200
+import kotlin.random.Random
 
 
 class MainActivity : ComponentActivity() {
@@ -60,7 +63,21 @@ class MainActivity : ComponentActivity() {
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun Home() {
+    val clipboardManager = LocalClipboardManager.current
     var Password  by remember { mutableStateOf("") }
+    var strength by remember { mutableStateOf("") }
+    val specialChar = arrayOf(
+        "!","$","%","(",")",",",":","<",">","/","]","~","[","@","?","|"
+    )
+    val uperCase = arrayOf(
+        "A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P",
+        "Q","R","S","T","U","V","X","Z","W","Y"
+    )
+    val lowerCase = arrayOf(
+        "a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p",
+        "q","r","s","t","u","v","x","z","w","y"
+    )
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -102,6 +119,7 @@ fun Home() {
                 )
                 IconButton(
                     onClick = {
+                        clipboardManager.setText(annotatedString = AnnotatedString(Password))
                     },
                     modifier = Modifier.size(50.dp).background(
                         color = Blue900,
@@ -116,6 +134,13 @@ fun Home() {
                 }
                 IconButton(
                     onClick = {
+                        val number = Random.nextInt(100000,999999)
+
+                        Password = "${uperCase.random()}${uperCase.random()}" +
+                                "${lowerCase.random()}${lowerCase.random()}" +
+                                "$number" +
+                                "${specialChar.random()}${specialChar.random()}"
+                        strength = "Senha Forte"
                     },
                     modifier = Modifier.size(50.dp).background(
                         color = BlueA200,
@@ -129,6 +154,11 @@ fun Home() {
                     )
                 }
             }
+            Text(
+                text = strength,
+                color = Green900,
+                fontSize = 20.sp,
+            )
         }
     }
 }
